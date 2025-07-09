@@ -72,7 +72,7 @@ app.use(router)
 // });
 
 app.get("/ping", (_req, res) => {
-    res.send("Ping successfull 😊");
+    res.send("Ping successfull awards 😊");
   });
 
 const startServer = async () => {
