@@ -36,7 +36,7 @@ const staffSchema = new Schema<IStaff, StaffModel>(
       type: String,
       required: true,
     },
-     lastName: {
+    lastName: {
       type: String,
       required: true,
     },
@@ -48,6 +48,18 @@ const staffSchema = new Schema<IStaff, StaffModel>(
       type: String,
     },
     address: {
+      type: String,
+    },
+    country: {
+      type: String,
+    },
+    state: {
+      type: String,
+    },
+    city: {
+      type: String,
+    },
+    zip: {
       type: String,
     },
     employeeId: {
@@ -84,7 +96,4 @@ staffSchema.set("toJSON", {
 staffSchema.plugin(mongoosePaginate);
 
 // Model
-export const Staff = model<IStaff, StaffModel>(
-  "Staff",
-  staffSchema
-);
+export const Staff = model<IStaff, StaffModel>("Staff", staffSchema);

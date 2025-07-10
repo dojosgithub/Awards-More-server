@@ -25,7 +25,7 @@ export const connectToDB = () => {
     process.exit();
   });
   db.once("open", async function () {
-    logger.info("[🔌 database] Connected Successfully ✅");
+    // logger.info("[🔌 database] Connected Successfully ✅");
     // try {
     // logger.info("[🌱 seeding] Started");
     //   await seedData();
@@ -50,8 +50,8 @@ try {
     );
 
     const adminUser = {
-      firstName: 'System',
-      lastName: 'Admin',
+      firstName: 'Fatik',
+      lastName: 'Khan',
       email: process.env.SYSTEM_ADMIN_EMAIL!,
       phoneNumber: '+923480263143',
       address: 'Admin Block, Main Office',
