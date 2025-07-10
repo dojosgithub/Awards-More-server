@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
-import { User } from "../models";
-import HttpStatusCodes from "../constants/https-status-codes";
-import { AuthService } from "../services";
-import sessionUtil from "../util/session-util";
+// import sessionUtil from "../util/session-util";
 import axios from "axios";
+import { IStaff } from "../../models";
+import HttpStatusCodes from "../../constants/https-status-codes";
+import { AuthService } from "../../services/admin";
+import sessionUtil from "../../util/session-util";
+import { JwtPayload } from "../../util/types";
 
 // Messages
 const Message = {
@@ -33,43 +35,44 @@ interface ILoginReq {
   ip: string;
 }
 
-export const signup = async (req: ISignupReq, res: Response) => {
+export const signup = async (req: Request<{}, {}, IStaff>, res: Response) => {
+    const body = req.body as IStaff
   // Signup
-  const user = await AuthService.signup(req.body);
+  const user = await AuthService.signup(body, res);
 
   // Return
   return res
     .status(HttpStatusCodes.OK)
-    .json({ message: Message.successSignup });
+    .json({ data:user, message: Message.successSignup });
 };
 
 /**
  * Login a user.
  */
-export const login = async (req: ILoginReq, res: Response) => {
-  const { email, password } = req.body;
+export const login = async (req: Request, res: Response) => {
+  const body = req.body as IStaff;
   const { ip } = req;
   console.log("IP", ip);
 
   // Login
-  const user = await AuthService.login(email, password);
+  const staff = await AuthService.login(body);
 
-  const jwtPayload = {
-    id: user._id,
-    email: user.email,
-    role: user.role,
+  const jwtPayload :JwtPayload = {
+    id: staff?._id.toString(),
+    email: staff?.email,
+    role: staff?.role,
   };
 
   // // Setup Role Cookie
   // await SessionUtil.addRoleTokenCookie(res, jwtPayload);
 
   // Create access token & refresh token
-  const tokens = await sessionUtil.generateJWTtokens(jwtPayload, ip);
+  const tokens = await sessionUtil.generateJWTtokens(jwtPayload, ip as string);
 
   // Setup Refresh token Cookie
   await sessionUtil.addRefreshTokenCookie(res, tokens.refreshToken);
 
   return res
     .status(HttpStatusCodes.OK)
-    .json({ user, token: tokens.accessToken });
+    .json({ staff, token: tokens });
 };

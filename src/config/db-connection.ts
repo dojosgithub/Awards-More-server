@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import logger from "jet-logger";
 import dotenv from "dotenv";
+import { Staff } from "../models";
+import passwordUtil from "../util/password-util";
+import { USER_ROLE } from "../constants/misc";
 
 dotenv.config();
 
@@ -24,6 +27,7 @@ export const connectToDB = () => {
   db.once("open", async function () {
     logger.info("[🔌 database] Connected Successfully ✅");
     // try {
+    // logger.info("[🌱 seeding] Started");
     //   await seedData();
     //   logger.info("[🌱 seeding] Ended");
     // } catch (error) {
@@ -32,4 +36,38 @@ export const connectToDB = () => {
   });
 };
 
-async function seedData() {}
+async function seedData() {
+try {
+    const existingStaff = await Staff.findOne({ email: process.env.SYSTEM_ADMIN_EMAIL });
+
+    if (existingStaff) {
+      console.log('✅ System admin already exists.');
+      return;
+    }
+
+    const hashedPassword = await passwordUtil.getHash(
+      process.env.SYSTEM_ADMIN_PASSWORD || 'SuperSecure123!'
+    );
+
+    const adminUser = {
+      firstName: 'System',
+      lastName: 'Admin',
+      email: process.env.SYSTEM_ADMIN_EMAIL!,
+      phoneNumber: '+923480263143',
+      address: 'Admin Block, Main Office',
+      country: 'Pakistan',
+      state: 'Sindh',
+      city: 'Karachi',
+      zip: '75300',
+      imageUrl:  "https://res.cloudinary.com/dojo-dev/image/upload/v1752143708/awards-and-more-dev/avatar_zmfdyk.png", 
+      password: hashedPassword,
+      role: USER_ROLE.Admin,
+
+    };
+
+    await new Staff(adminUser).save();
+    console.log('✅ System admin seeded successfully.');
+  } catch (err) {
+    console.error('❌ Error seeding system admin:', err);
+  }
+}

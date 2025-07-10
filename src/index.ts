@@ -3,8 +3,8 @@ import express, { Response } from 'express';
 import session from 'express-session';
 import dotenv from 'dotenv';
 import {connectToDB} from "./config/db-connection"
-import { router } from './router';
 import cors from "cors";
+import { adminRouter } from './router/admin-router';
 
 dotenv.config();
 
@@ -65,7 +65,8 @@ app.use(session({
     sameSite: 'lax'
   }
 }));
-app.use(router)
+// app.use(router)
+app.use('/api/admin', adminRouter);
 
 // app.get('/', (_req, res) => {
 //   res.send('Hello from TypeScript + MongoDB!');

@@ -55,7 +55,7 @@ export default {
         httpOnly: true,
         sameSite: "none",
         // signed: true,
-        maxAge: Number(process.env.REFRESH_COOKIE_EXP ?? 0),
+        maxAge: Number(process.env.REFRESH_JWT_EXP ?? 0),
         secure: process.env.SECURE_COOKIE === "true",
       },
     },

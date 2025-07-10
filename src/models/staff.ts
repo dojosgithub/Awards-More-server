@@ -4,14 +4,19 @@ import { USER_ROLE } from "../constants/misc";
 
 // ----------------------------------------
 
-export interface IUser {
+export interface IStaff {
   _id: Types.ObjectId;
-  username: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  picture?: string;
-  phone?: string;
+  phoneNumber?: string;
+  address?: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  zip?: string;
+  employeeId?: string;
+  imageUrl?: string;
   password: string;
   role: USER_ROLE;
   createdAt: NativeDate;
@@ -19,64 +24,67 @@ export interface IUser {
 }
 
 // If you plan to add instance methods later, define them here
-export interface IUserMethods {}
+export interface IStaffMethods {}
 
-type UserModel = Model<IUser, {}, IUserMethods>;
+export type StaffModel = Model<IStaff, {}, IStaffMethods>;
 
 // ----------------------------------------
 
-const userSchema = new Schema<IUser, UserModel>(
+const staffSchema = new Schema<IStaff, StaffModel>(
   {
-    username: {
+    firstName: {
       type: String,
       required: true,
-      unique: true,
     },
-    firstname: {
+     lastName: {
       type: String,
-    },
-    lastname: {
-      type: String,
-    },
-    picture: {
-      type: String,
+      required: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true,
     },
-    phone: {
+    phoneNumber: {
       type: String,
-      required: true,
-      unique: true,
+    },
+    address: {
+      type: String,
+    },
+    employeeId: {
+      type: String,
+    },
+    imageUrl: {
+      type: String,
     },
     password: {
       type: String,
       required: true,
     },
     role: {
-        type: String,
-        default: USER_ROLE.User,
-      },
+      type: String,
+      default: USER_ROLE.Manager,
+    },
   },
   { versionKey: false, timestamps: true }
 );
 
 // Optional: remove sensitive fields when converting to JSON
 
-userSchema.set("toJSON", {
+staffSchema.set("toJSON", {
   virtuals: true, // keep virtuals
   versionKey: false,
   transform: function (doc, ret) {
-    delete ret.id;        // Remove the virtual 'id'
-    delete ret.password;  // Optional
+    delete ret.id; // Remove the virtual 'id'
+    delete ret.password; // Optional
     return ret;
   },
 });
 
 // Plugins
-userSchema.plugin(mongoosePaginate);
+staffSchema.plugin(mongoosePaginate);
 
 // Model
-export const User = model<IUser, UserModel>("User", userSchema);
+export const Staff = model<IStaff, StaffModel>(
+  "Staff",
+  staffSchema
+);

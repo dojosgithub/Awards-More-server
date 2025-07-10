@@ -1,9 +1,10 @@
 import _ from "lodash";
-import HttpStatusCodes from "../constants/https-status-codes";
-import { IUser, User } from "../models";
-import { RouteError } from "../other/classes";
-import passwordUtil from "../util/password-util";
-import { tick } from "../util/misc";
+import { RouteError } from "../../other/classes";
+import HttpStatusCodes from "../../constants/https-status-codes";
+import { IStaff, Staff } from "../../models";
+import passwordUtil from "../../util/password-util";
+import { Request, Response } from "express";
+import { USER_ROLE } from "../../constants/misc";
 
 export const Errors = {
   Unauth: "Unauthorized",
@@ -25,26 +26,18 @@ export const Errors = {
   ParamFalsey: "Param is falsey",
 } as const;
 
-interface ISignupReq {
-  username: string;
-  email: string;
-  password: string;
-  firstname: string;
-  lastname: string;
-  phone: string;
-}
-
-export const signup = async (reqBody: ISignupReq): Promise<IUser> => {
-  const { email, username, password, firstname, lastname, phone } = reqBody;
+export const signup = async (body: IStaff, res: Response) => {
+  const { firstName,lastName, email, phoneNumber, address, employeeId, password } =
+    body;
 
   // Check user exists
-  const user = await User.findOne({ $or: [{ email }, { username }] });
+  const user = await Staff.findOne({ email });
   const userExists: boolean = !_.isEmpty(user);
-  if (userExists)
-    throw new RouteError(
-      HttpStatusCodes.BAD_REQUEST,
-      Errors.EmailAlreadyExists(email)
-    );
+  if (userExists) {
+    return res
+      .status(HttpStatusCodes.BAD_REQUEST)
+      .json({ message: "An account with this email already exists" });
+  }
 
   // Encrypt password
   const hashPassword: string = await passwordUtil.getHash(password);
@@ -63,41 +56,47 @@ export const signup = async (reqBody: ISignupReq): Promise<IUser> => {
   // );
 
   // Create user in db
-  const _newUser = {
-    username,
+  const _newStaff = {
+    firstName,
+    lastName,
     email,
     password: hashPassword,
-    firstname,
-    lastname,
-    //   stripeCustomer,
-    phone,
+    phoneNumber,
+    address,
+    role: USER_ROLE.Manager,
+    employeeId,
+    imageUrl : "https://res.cloudinary.com/dojo-dev/image/upload/v1752143708/awards-and-more-dev/avatar_zmfdyk.png",
   };
-  const _user = new User(_newUser);
-  await _user.save();
+  const _staff = new Staff(_newStaff);
+  await _staff.save();
 
-  return _user;
+  return _staff;
 };
 
+interface ILoginReq {
+    email: string;
+    password: string;
+  };
 
 /**
  * Login a user.
  */
-export const login = async (email: string, password: string) => {
+export const login = async (body:ILoginReq) => {
+    const {email, password} = body
     // Fetch user
-    const user = await User.findOne({ email });
-  
-    if (_.isEmpty(user))
+    const staff = await Staff.findOne({ email });
+
+    if (_.isEmpty(staff))
       throw new RouteError(HttpStatusCodes.BAD_REQUEST, Errors.InvalidLogin);
-  
+
     // Check password
-    const hash = user.password ?? "",
+    const hash = staff.password ?? "",
       pwdPassed = await passwordUtil.compare(password, hash);
-  
+
     if (!pwdPassed) {
       // If password failed, wait 500ms this will increase security
-      await tick(500);
       throw new RouteError(HttpStatusCodes.BAD_REQUEST, Errors.InvalidLogin);
     }
-  
-    return user;
+
+    return staff;
   };
