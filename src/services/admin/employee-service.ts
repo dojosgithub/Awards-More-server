@@ -85,8 +85,8 @@ export const addEmployee = async (
   const emailProps = {
   email: email,
   password: password,
-  firstName : firstName, // Optional if using default user.email
-  lastName : lastName, // Optional if using default user.email
+  firstName : firstName,
+  lastName : lastName
 
 };
  const emailService = new Email(_staff);

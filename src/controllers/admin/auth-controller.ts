@@ -14,6 +14,7 @@ const Message = {
   success: "Success",
   error: "An error occurred",
   NotFound: "User not found",
+  otpSentSuccess: "OTP sent successfully.",
 } as const;
 
 export interface ISignupReq {
@@ -35,15 +36,24 @@ interface ILoginReq {
   ip: string;
 }
 
+export interface IVerifyTotp {
+  body: {
+    email: string;
+    code: string;
+    password: string;
+  };
+    ip: string;
+}
+
 export const signup = async (req: Request<{}, {}, IStaff>, res: Response) => {
-    const body = req.body as IStaff
+  const body = req.body as IStaff;
   // Signup
   const user = await AuthService.signup(body, res);
 
   // Return
   return res
     .status(HttpStatusCodes.OK)
-    .json({ data:user, message: Message.successSignup });
+    .json({ data: user, message: Message.successSignup });
 };
 
 /**
@@ -57,7 +67,7 @@ export const login = async (req: Request, res: Response) => {
   // Login
   const staff = await AuthService.login(body);
 
-  const jwtPayload :JwtPayload = {
+  const jwtPayload: JwtPayload = {
     id: staff?._id.toString(),
     email: staff?.email,
     role: staff?.role,
@@ -72,7 +82,27 @@ export const login = async (req: Request, res: Response) => {
   // Setup Refresh token Cookie
   await sessionUtil.addRefreshTokenCookie(res, tokens.refreshToken);
 
+  return res.status(HttpStatusCodes.OK).json({ staff, token: tokens });
+};
+
+export const forgotPasswordSendCode = async (req: Request, res: Response) => {
+  const body = req.body;
+  const token = await AuthService.forgotPasswordSendCode(body);
+
+  // Return
   return res
     .status(HttpStatusCodes.OK)
-    .json({ staff, token: tokens });
+    .json({ token: token, message: Message.otpSentSuccess });
+};
+
+export const verifyToken = async (req: IVerifyTotp, res: Response) => {
+  const { email, code, password } = req.body;
+  const { ip } = req;
+  console.log("Email", email);
+
+  const user = await AuthService.verifyToken(email, code, password, ip, res);
+
+  return res
+    .status(HttpStatusCodes.OK)
+    .json({ user, message: Message.success });
 };

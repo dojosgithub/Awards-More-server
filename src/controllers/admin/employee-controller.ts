@@ -10,7 +10,7 @@ const Message = {
   successVerified: "Verified success",
   successEdit: "Employee edited successfully!",
   success: "Success",
-  deleteSuccess : "Employee deleted sucessfully",
+  deleteSuccess: "Employee deleted sucessfully",
   error: "An error occurred",
   NotFound: "User not found",
 } as const;
@@ -25,6 +25,13 @@ interface IReqPagination {
 
 interface IReqUsersId extends Request<{ id: string }> {
   id: string;
+}
+
+interface SessionRequest extends Request {
+  _session?: {
+    id?: string; // adjust based on your JWT payload
+    [key: string]: any;
+  };
 }
 
 export const addEmployee = async (
@@ -70,7 +77,7 @@ export const editEmployee = async (req: Request, res: Response) => {
   const { id: userId } = req.params;
   const body = req.body as Partial<IStaff>;
   const imageUrl = req.file?.path as string | undefined;
-  console.log('imageUrl', imageUrl)
+  console.log("imageUrl", imageUrl);
 
   const updatedUser = await EmployeeService.editEmployee(
     body,
@@ -92,4 +99,26 @@ export const deleteEmployee = async (req: Request, res: Response) => {
   return res
     .status(HttpStatusCodes.OK)
     .json({ message: Message.deleteSuccess });
+};
+
+export const profile = async (req: SessionRequest, res: Response) => {
+  const staffId = req._session?.id;
+
+  if (!staffId) {
+    return res
+      .status(HttpStatusCodes.UNAUTHORIZED)
+      .json({ message: "Unauthorized: No user ID" });
+  }
+
+  const staff = await Staff.findById(staffId).select("-password");
+  if (!staff) {
+    return res
+      .status(HttpStatusCodes.NOT_FOUND)
+      .json({ message: "User not found" });
+  }
+
+  return res.status(HttpStatusCodes.OK).json({
+    message: "Profile fetched successfully",
+    staff,
+  });
 };

@@ -40,5 +40,10 @@ employeeRouter.delete(
   asyncHandler(employeeController.deleteEmployee)
 );
 
+//? @api  = /employees
+//? @desc = gets list of employees
+employeeRouter.get(Paths.employee.profile, asyncHandler(AuthenticateMW), asyncHandler(employeeController.profile));
+
+
 
 export { employeeRouter };
