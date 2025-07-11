@@ -40,6 +40,8 @@ export default class Email {
         user: process.env.EMAIL_FROM,
         pass: process.env.EMAIL_PASSWORD,
       },
+      logger: true, 
+    debug: true,
     });
   }
 
