@@ -1,13 +1,12 @@
 import _, { isEmpty } from "lodash";
 import { RouteError } from "../../other/classes";
 import HttpStatusCodes from "../../constants/https-status-codes";
-import { IStaff, Staff } from "../../models";
+import { IStaff, Staff, TOTP } from "../../models";
 import passwordUtil from "../../util/password-util";
-import { Request, Response } from "express";
+import {  Response } from "express";
 import { USER_ROLE } from "../../constants/misc";
 import speakeasy from "speakeasy";
 import { generateOTToken, verifyTOTPToken } from "../../util/misc";
-import { TOTP } from "../../models/totp";
 import Email from "../../util/email-util";
 import sessionUtil from "../../util/session-util";
 import { JwtPayload } from "../../util/types";
