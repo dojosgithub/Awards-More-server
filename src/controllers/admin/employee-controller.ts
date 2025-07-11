@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import { IStaff, Staff } from "../../models";
 import HttpStatusCodes from "../../constants/https-status-codes";
 import { EmployeeService } from "../../services/admin";
+import { JwtPayload } from "../../util/types";
+import sessionUtil from "../../util/session-util";
 
 // Messages
 const Message = {
@@ -77,7 +79,6 @@ export const editEmployee = async (req: Request, res: Response) => {
   const { id: userId } = req.params;
   const body = req.body as Partial<IStaff>;
   const imageUrl = req.file?.path as string | undefined;
-  console.log("imageUrl", imageUrl);
 
   const updatedUser = await EmployeeService.editEmployee(
     body,
@@ -103,6 +104,7 @@ export const deleteEmployee = async (req: Request, res: Response) => {
 
 export const profile = async (req: SessionRequest, res: Response) => {
   const staffId = req._session?.id;
+  const { ip } = req;
 
   if (!staffId) {
     return res
@@ -110,15 +112,31 @@ export const profile = async (req: SessionRequest, res: Response) => {
       .json({ message: "Unauthorized: No user ID" });
   }
 
-  const staff = await Staff.findById(staffId).select("-password");
+  const staff = await Staff.findById(staffId).select("-password").lean();
   if (!staff) {
     return res
       .status(HttpStatusCodes.NOT_FOUND)
       .json({ message: "User not found" });
   }
 
+  const jwtPayload: JwtPayload = {
+    id: staff?._id.toString(),
+    email: staff?.email,
+    role: staff?.role,
+  };
+
+  const tokens = await sessionUtil.generateJWTtokens(jwtPayload, ip as string);
+
+  // Setup Refresh token Cookie
+  await sessionUtil.addRefreshTokenCookie(res, tokens.refreshToken);
+  const user = {
+    ...staff,
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+  };
+
   return res.status(HttpStatusCodes.OK).json({
     message: "Profile fetched successfully",
-    staff,
+    user,
   });
 };
