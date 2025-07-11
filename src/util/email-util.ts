@@ -71,7 +71,7 @@ export default class Email {
     console.log('EMAIL PROPS', emailProps);
 
     const renderedHtml = await ejs.renderFile(
-      path.join(__dirname, `../../templates/${template}.ejs`),
+      path.join(__dirname, `../../templates/admin/${template}.ejs`),
       { emailProps, subject }
     );
 

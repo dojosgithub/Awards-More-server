@@ -31,8 +31,8 @@ export const addEmployee = async (
   req: Request<{}, {}, IStaff>,
   res: Response
 ) => {
-  const body = req.body as IStaff;
-  const imageUrl = req.file?.path as string;
+  const body = req.body as IStaff; // Parsed form fields
+  const imageUrl = (req.file as any)?.path;
 
   // const body = req.body as IStaff
   // Signup
