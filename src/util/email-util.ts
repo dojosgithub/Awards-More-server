@@ -113,4 +113,8 @@ export default class Email {
     // 1st temp name 2nd subject of email and 3rd arg is the email props
     await this.send('forgot-password', 'Change password', arg);
   }
+   public async sendAdminLoginCredentials(arg: EmailProps): Promise<void> {
+    // 1st temp name 2nd subject of email and 3rd arg is the email props
+    await this.send('Admin-login-credentials', 'Login-Credentials', arg);
+  }
 }

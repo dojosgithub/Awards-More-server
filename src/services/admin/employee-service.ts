@@ -5,6 +5,7 @@ import { IStaff, Staff } from "../../models";
 import passwordUtil from "../../util/password-util";
 import { Request, Response } from "express";
 import { USER_ROLE } from "../../constants/misc";
+import Email from "../../util/email-util";
 
 export const Errors = {
   Unauth: "Unauthorized",
@@ -80,6 +81,16 @@ export const addEmployee = async (
   };
   const _staff = new Staff(_newStaff);
   await _staff.save();
+
+  const emailProps = {
+  email: email,
+  password: password,
+  firstName : firstName, // Optional if using default user.email
+  lastName : lastName, // Optional if using default user.email
+
+};
+ const emailService = new Email(_staff);
+ await emailService.sendAdminLoginCredentials(emailProps);
 
   return _staff;
 };
