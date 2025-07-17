@@ -6,6 +6,10 @@ const Paths = {
     login: "/log-in",
     forgotPassword: "/forgot-password",
     verify: "/verify-otp",
+    auth:{
+      login:"/quickbooks/login",
+      callback : "/quickbooks/callback",
+    }
   },
   employee: {
     addEmployee: "/add-employee",

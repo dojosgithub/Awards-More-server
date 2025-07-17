@@ -6,6 +6,7 @@ import HttpStatusCodes from "../../constants/https-status-codes";
 import { AuthService } from "../../services/admin";
 import sessionUtil from "../../util/session-util";
 import { JwtPayload } from "../../util/types";
+import qs from "qs";
 
 // Messages
 const Message = {
@@ -42,7 +43,7 @@ export interface IVerifyTotp {
     code: string;
     password: string;
   };
-    ip: string;
+  ip: string;
 }
 
 export const signup = async (req: Request<{}, {}, IStaff>, res: Response) => {
@@ -106,3 +107,86 @@ export const verifyToken = async (req: IVerifyTotp, res: Response) => {
     .status(HttpStatusCodes.OK)
     .json({ user, message: Message.success });
 };
+
+/////// quickbooks auth ////////////
+
+export const quickbooksLogin = async (req: Request, res: Response) => {
+  const { code, realmId } = req.query;
+
+  // Step 1: No code → start OAuth flow
+  if (!code || !realmId) {
+    const queryParams = qs.stringify({
+      client_id: process.env.QB_CLIENT_ID,
+      redirect_uri: process.env.QB_REDIRECT_URI,
+      response_type: "code",
+     scope: "com.intuit.quickbooks.accounting openid profile email",
+      state: "admin123", // Optional state param
+    });
+
+    const authUrl = `https://appcenter.intuit.com/connect/oauth2?${queryParams}`;
+    return res.redirect(authUrl);
+  }
+  const tokenRes = await axios.post(
+    "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    qs.stringify({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: process.env.QB_REDIRECT_URI,
+    }),
+    {
+      headers: {
+        Authorization:
+          "Basic " +
+          Buffer.from(
+            `${process.env.QB_CLIENT_ID}:${process.env.QB_CLIENT_SECRET}`
+          ).toString("base64"),
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+
+  const { access_token, refresh_token, expires_in } = tokenRes.data;
+
+  let quickbooksSession = {
+    access_token: access_token,
+    refresh_token: refresh_token,
+    realmId: realmId,
+    expires_at: Date.now() + expires_in * 1000,
+    expires_in: expires_in,
+  };
+  console.log("✅ QuickBooks Auth Success", quickbooksSession);
+  res.send("QuickBooks authorization successful. You can close this tab.");
+};
+
+// export const quickbooksLoginCallback = async (req: Request, res: Response) => {
+//   const { code, realmId } = req.query;
+
+//   const tokenRes = await axios.post(
+//     "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+//     qs.stringify({
+//       grant_type: "authorization_code",
+//       code,
+//       redirect_uri: process.env.QB_REDIRECT_URI,
+//     }),
+//     {
+//       headers: {
+//         Authorization:
+//           "Basic " +
+//           Buffer.from(
+//             `${process.env.QB_CLIENT_ID}:${process.env.QB_CLIENT_SECRET}`
+//           ).toString("base64"),
+//         "Content-Type": "application/x-www-form-urlencoded",
+//       },
+//     }
+//   );
+//   const { access_token, refresh_token, expires_in } = tokenRes.data;
+
+//   let quickbooksSession = {
+//     access_token: access_token,
+//     refresh_token: refresh_token,
+//     realmId: realmId,
+//     expires_at: Date.now() + expires_in * 1000,
+//   };
+//   console.log("✅ QuickBooks Auth Success", quickbooksSession);
+//   res.send("QuickBooks authorization successful. You can close this tab.");
+// };
