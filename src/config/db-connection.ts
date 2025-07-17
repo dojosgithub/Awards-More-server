@@ -25,7 +25,7 @@ export const connectToDB = () => {
     process.exit();
   });
   db.once("open", async function () {
-    // logger.info("[🔌 database] Connected Successfully ✅");
+    logger.info("[🔌 database] Connected Successfully ✅");
     // try {
     // logger.info("[🌱 seeding] Started");
     //   await seedData();

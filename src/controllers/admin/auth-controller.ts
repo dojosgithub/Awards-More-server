@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 // import sessionUtil from "../util/session-util";
 import axios from "axios";
-import { IStaff } from "../../models";
+import { IStaff, Quickbook } from "../../models";
 import HttpStatusCodes from "../../constants/https-status-codes";
 import { AuthService } from "../../services/admin";
 import sessionUtil from "../../util/session-util";
@@ -151,9 +151,9 @@ export const quickbooksLogin = async (req: Request, res: Response) => {
     access_token: access_token,
     refresh_token: refresh_token,
     realmId: realmId,
-    expires_at: Date.now() + expires_in * 1000,
-    expires_in: expires_in,
+    expires_in: Date.now() + expires_in * 1000,
   };
+  await Quickbook.create(quickbooksSession);
   console.log("✅ QuickBooks Auth Success", quickbooksSession);
   res.send("QuickBooks authorization successful. You can close this tab.");
 };
