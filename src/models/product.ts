@@ -12,7 +12,8 @@ export interface IProduct {
   sku?: string;
   price?: string;
   minimumOrderQuantity?: number;
-  quickbooksItemId?: string;
+  description?: string;
+  qtyOnHand?: number;
   createdAt: NativeDate;
   updatedAt: NativeDate;
 }
@@ -35,7 +36,6 @@ const productSchema = new Schema<IProduct, productSchema>(
       type: Schema.Types.ObjectId,
       ref: "Category",
     },
-
     sku: {
       type: String,
     },
@@ -46,8 +46,11 @@ const productSchema = new Schema<IProduct, productSchema>(
       type: Number,
     },
 
-    quickbooksItemId: {
+    description: {
       type: String,
+    },
+      qtyOnHand: {
+      type: Number,
     },
   },
   { versionKey: false, timestamps: true }

@@ -26,6 +26,13 @@ const Paths = {
     categoryId : '/category/:id',
     delete : '/category/:id',
   },
+    Product: {
+    addProduct: "/add-product",
+    list : '/categories',
+    edit : '/category/:id',
+    categoryId : '/category/:id',
+    delete : '/category/:id',
+  },
 };
 
 export default Paths;

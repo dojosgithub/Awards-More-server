@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { IStaff } from "../../models";
+import { IProduct, IStaff } from "../../models";
 import HttpStatusCodes from "../../constants/https-status-codes";
-import { CategoryService } from "../../services/admin";
-import { Category, ICategory } from "../../models/category";
+import { CategoryService, ProductService } from "../../services/admin";
+import { Category } from "../../models/category";
 
 // Messages
 const Message = {
@@ -29,21 +29,21 @@ interface IReqCategoryId extends Request<{ id: string }> {
   id: string;
 }
 
-export const addCategory = async (
-  req: Request<{}, {}, ICategory>,
+export const addProduct = async (
+  req: Request<{}, {}, IProduct>,
   res: Response
 ) => {
-  const body = req.body as ICategory; // Parsed form fields
+  const body = req.body as IProduct; // Parsed form fields
   const imageUrl = (req.file as any)?.path;
 
   // const body = req.body as IStaff
   // Signup
-  const category = await CategoryService.addCategory(body, res, imageUrl);
+  const user = await ProductService.addProduct(body, res, imageUrl);
 
   // Return
   return res
     .status(HttpStatusCodes.OK)
-    .json({ data: category, message: Message.categoryAdded });
+    .json({ data: user, message: Message.categoryAdded });
 };
 
 export const getAllCategory = async (req: IReqPagination, res: Response) => {

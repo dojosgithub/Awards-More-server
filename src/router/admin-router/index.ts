@@ -3,6 +3,7 @@ import { authRouter } from "./auth-router";
 import { employeeRouter } from "./employee-router";
 import { quickbooksAuthRouter } from "./quickbooks-auth";
 import { categoryRouter } from "./category-router";
+import { productRouter } from "./product-router";
 
 
 const adminRouter: Router = Router({ mergeParams: true });
@@ -18,5 +19,6 @@ adminRouter.use(authRouter);
 adminRouter.use(employeeRouter);
 adminRouter.use(quickbooksAuthRouter);
 adminRouter.use(categoryRouter);
+adminRouter.use(productRouter);
 
 export { adminRouter };
