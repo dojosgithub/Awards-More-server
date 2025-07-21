@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { authRouter } from "./auth-router";
 import { employeeRouter } from "./employee-router";
 import { quickbooksAuthRouter } from "./quickbooks-auth";
+import { categoryRouter } from "./category-router";
 
 
 const adminRouter: Router = Router({ mergeParams: true });
@@ -16,5 +17,6 @@ adminRouter.use((req: Request, res: Response, next: NextFunction) => {
 adminRouter.use(authRouter);
 adminRouter.use(employeeRouter);
 adminRouter.use(quickbooksAuthRouter);
+adminRouter.use(categoryRouter);
 
 export { adminRouter };

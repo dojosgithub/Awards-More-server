@@ -19,6 +19,13 @@ const Paths = {
     delete : '/employee/:id',
     profile: "/profile",
   },
+   Category: {
+    addCategory: "/add-category",
+    list : '/categories',
+    edit : '/category/:id',
+    categoryId : '/category/:id',
+    delete : '/category/:id',
+  },
 };
 
 export default Paths;
