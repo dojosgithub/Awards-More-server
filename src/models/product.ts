@@ -1,5 +1,4 @@
 import { Schema, model, Types, Model } from "mongoose";
-import mongoosePaginate from "mongoose-paginate-v2";
 import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 // ----------------------------------------
@@ -11,6 +10,7 @@ export interface IProduct {
   category?: Types.ObjectId;
   sku?: string;
   price?: string;
+  quickbooksItemId: string;
   minimumOrderQuantity?: number;
   description?: string;
   qtyOnHand?: number;
@@ -49,7 +49,10 @@ const productSchema = new Schema<IProduct, productSchema>(
     description: {
       type: String,
     },
-      qtyOnHand: {
+    quickbooksItemId: {
+      type: String,
+    },
+    qtyOnHand: {
       type: Number,
     },
   },

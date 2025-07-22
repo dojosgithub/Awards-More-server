@@ -1,4 +1,3 @@
-import { profile } from "console";
 
 const Paths = {
   Auth: {
@@ -28,10 +27,10 @@ const Paths = {
   },
     Product: {
     addProduct: "/add-product",
-    list : '/categories',
-    edit : '/category/:id',
+    list : '/products',
+    edit : '/product/:id',
+    delete : '/product/:id',
     categoryId : '/category/:id',
-    delete : '/category/:id',
   },
 };
 

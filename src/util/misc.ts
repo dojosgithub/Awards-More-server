@@ -67,3 +67,17 @@ export const CATEGORY_STATUS = {
     ACTIVE : "Active",
     INACTIVE: "Inactive",
   }
+
+  export const CUSTOMER_ACCOUNT_TYPE = {
+    APP : "application_account",
+    GOOGLE: "google_account",
+    APPLE: "apple_account",
+  }
+
+  export const formatDate = () => {
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2, '0');
+  const mm = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const yyyy = now.getFullYear();
+  return `${dd}-${mm}-${yyyy}`;
+};

@@ -119,7 +119,7 @@ export const quickbooksLogin = async (req: Request, res: Response) => {
       client_id: process.env.QB_CLIENT_ID,
       redirect_uri: process.env.QB_REDIRECT_URI,
       response_type: "code",
-     scope: "com.intuit.quickbooks.accounting openid profile email",
+      scope: "com.intuit.quickbooks.accounting openid profile email",
       state: "admin123", // Optional state param
     });
 
@@ -153,7 +153,15 @@ export const quickbooksLogin = async (req: Request, res: Response) => {
     realmId: realmId,
     expires_in: Date.now() + expires_in * 1000,
   };
-  await Quickbook.create(quickbooksSession);
+  await Quickbook.findOneAndUpdate(
+    {}, // Match any existing document
+    quickbooksSession,
+    {
+      upsert: true, // Create if not exists
+      new: true, // Return the updated document
+      setDefaultsOnInsert: true,
+    }
+  );
   console.log("✅ QuickBooks Auth Success", quickbooksSession);
   res.send("QuickBooks authorization successful. You can close this tab.");
 };

@@ -13,29 +13,29 @@ const productRouter: Router = Router({ mergeParams: true });
 productRouter.post(Paths.Product.addProduct, asyncHandler(AuthenticateMW),parser .single('file'), asyncHandler(productController.addProduct));
 
 
-// //? @api  = /categories
-// //? @desc = gets list of categories
-// productRouter.get(Paths.Category.list, asyncHandler(AuthenticateMW), asyncHandler(categoryController.getAllCategory));
+//? @api  = /products
+//? @desc = gets list of products
+productRouter.get(Paths.Product.list, asyncHandler(AuthenticateMW), asyncHandler(productController.getAllProducts));
 
-// //? @api  = category/:id
-// //? @desc = edit category by ID
-// productRouter.put(
-//     Paths.Category.edit,
-//     asyncHandler(AuthenticateMW),
-//     parser.single('file'), 
-//   asyncHandler(categoryController.editcategory)
-// );
+//? @api  = product/:id
+//? @desc = edit product by ID
+productRouter.put(
+    Paths.Product.edit,
+    asyncHandler(AuthenticateMW),
+    parser.single('file'), 
+  asyncHandler(productController.editProduct)
+);
 
 // //? @api  = category/:id
 // //? @desc = Get a specific category by ID
 // productRouter.get(Paths.Category.categoryId, asyncHandler(AuthenticateMW), asyncHandler(categoryController.getcategoryById));
 
-// //? @api  = /api/category/:id
-// //? @desc = delete category by ID
-// productRouter.delete(
-//   Paths.Category.delete,
-//   asyncHandler(AuthenticateMW),
-//   asyncHandler(categoryController.deleteCategory)
-// );
+//? @api  = /api/category/:id
+//? @desc = delete category by ID
+productRouter.delete(
+  Paths.Product.delete,
+  asyncHandler(AuthenticateMW),
+  asyncHandler(productController.deleteProduct)
+);
 
 export { productRouter };

@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import {connectToDB} from "./config/db-connection"
 import cors from "cors";
 import { adminRouter } from './router/admin-router';
+import { customerRouter } from './router/customer-router';
 
 dotenv.config();
 
@@ -67,6 +68,7 @@ app.use(session({
 }));
 // app.use(router)
 app.use('/api/admin', adminRouter);
+app.use('/api/customer', customerRouter);
 
 // app.get('/', (_req, res) => {
 //   res.send('Hello from TypeScript + MongoDB!');

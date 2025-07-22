@@ -1,20 +1,20 @@
 import { Schema, model, Types, Model } from "mongoose";
-import mongoosePaginate from "mongoose-paginate-v2";
+import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 import { USER_ROLE } from "../constants/misc";
 
 // ----------------------------------------
 
 export interface ICustomer {
   _id: Types.ObjectId;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phoneNumber?: string;
   address?: string;
-  country?: string;
-  state?: string;
-  city?: string;
-  zip?: string;
   password: string;
+  quickbooksId: string;
+  account_Type: string;
+  orders?: [];
   role: USER_ROLE;
   createdAt: NativeDate;
   updatedAt: NativeDate;
@@ -29,42 +29,41 @@ type CustomerModel = Model<ICustomer, {}, ICustomerMethods>;
 
 const customerSchema = new Schema<ICustomer, CustomerModel>(
   {
-    name: {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
       type: String,
       required: true,
     },
     email: {
       type: String,
-       required: true,
+      required: true,
     },
-     phoneNumber: {
+    phoneNumber: {
       type: String,
     },
     address: {
       type: String,
     },
-    country: {
-      type: String,
-    },
-    state: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    city: {
-      type: String,
-    },
-    zip: {
+    quickbooksId: {
       type: String,
     },
     password: {
       type: String,
       required: true,
     },
+    account_Type: {
+      type: String,
+    },
+     orders: {
+      type: [],
+    },
     role: {
-        type: String,
-        default: USER_ROLE.Customer,
-      },
+      type: String,
+      default: USER_ROLE.Customer,
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -75,14 +74,17 @@ customerSchema.set("toJSON", {
   virtuals: true, // keep virtuals
   versionKey: false,
   transform: function (doc, ret) {
-    delete ret.id;        // Remove the virtual 'id'
-    delete ret.password;  // Optional
+    delete ret.id; // Remove the virtual 'id'
+    delete ret.password; // Optional
     return ret;
   },
 });
 
 // Plugins
-customerSchema.plugin(mongoosePaginate);
+customerSchema.plugin(aggregatePaginate);
 
 // Model
-export const Customer = model<ICustomer, CustomerModel>("Customer", customerSchema);
+export const Customer = model<ICustomer, CustomerModel>(
+  "Customer",
+  customerSchema
+);

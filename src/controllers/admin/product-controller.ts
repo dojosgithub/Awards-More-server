@@ -7,8 +7,8 @@ import { Category } from "../../models/category";
 // Messages
 const Message = {
   successSignup: "Sign up successful.",
-  categoryAdded: "Category added successfully.",
-  categoryEdit: "Category edited successfully.",
+  productAdded: "Product added successfully.",
+  productEdit: "Product edited successfully.",
   categoryDeleted: "Category deleted successfully.",
   successVerified: "Verified success",
   success: "Success",
@@ -43,35 +43,35 @@ export const addProduct = async (
   // Return
   return res
     .status(HttpStatusCodes.OK)
-    .json({ data: user, message: Message.categoryAdded });
+    .json({ data: user, message: Message.productAdded });
 };
 
-export const getAllCategory = async (req: IReqPagination, res: Response) => {
+export const getAllProducts = async (req: IReqPagination, res: Response) => {
   const limit = parseInt(req.query.limit) || 10;
   const page = parseInt(req.query.page) || 1;
   const search = req.query.search || "";
 
   // List members in pagination
-  const list = await CategoryService.getAllCategories({ page, limit, search });
+  const list = await ProductService.getAllProducts({ page, limit, search });
 
   return res.status(HttpStatusCodes.OK).json(list);
 };
 
-export const editcategory = async (req: Request, res: Response) => {
-  const { id: categoryId } = req.params;
+export const editProduct = async (req: Request, res: Response) => {
+  const { id: productId } = req.params;
   const body = req.body as Partial<IStaff>;
   const imageUrl = req.file?.path as string | undefined;
 
-  const updatedUser = await CategoryService.editEmployee(
+  const updatedProduct = await ProductService.editProduct(
     body,
     res,
-    categoryId,
+    productId,
     imageUrl
   );
 
   return res
     .status(HttpStatusCodes.OK)
-    .json({ data: updatedUser, message: Message.categoryEdit });
+    .json({ data: updatedProduct, message: Message.productEdit });
 };
 
 export const getcategoryById = async (req: IReqCategoryId, res: Response) => {
@@ -85,10 +85,10 @@ export const getcategoryById = async (req: IReqCategoryId, res: Response) => {
   res.status(HttpStatusCodes.OK).json({ success: true, data: category });
 };
 
-export const deleteCategory = async (req: Request, res: Response) => {
+export const deleteProduct = async (req: Request, res: Response) => {
   const { id: categoryId } = req.params;
 
-  await CategoryService.deletecategory(categoryId);
+  await ProductService.deleteProduct(categoryId, res);
 
   return res
     .status(HttpStatusCodes.OK)
