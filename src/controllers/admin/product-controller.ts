@@ -34,11 +34,12 @@ export const addProduct = async (
   res: Response
 ) => {
   const body = req.body as IProduct; // Parsed form fields
-  const imageUrl = (req.file as any)?.path;
+ const files = req.files as Express.Multer.File[];
+ const imageUrls = files.map(file => file.path);
 
   // const body = req.body as IStaff
   // Signup
-  const user = await ProductService.addProduct(body, res, imageUrl);
+  const user = await ProductService.addProduct(body, res, imageUrls);
 
   // Return
   return res
@@ -60,13 +61,14 @@ export const getAllProducts = async (req: IReqPagination, res: Response) => {
 export const editProduct = async (req: Request, res: Response) => {
   const { id: productId } = req.params;
   const body = req.body as Partial<IStaff>;
-  const imageUrl = req.file?.path as string | undefined;
+ const files = req.files as Express.Multer.File[];
+ const imageUrls = files.map(file => file.path);
 
   const updatedProduct = await ProductService.editProduct(
     body,
     res,
     productId,
-    imageUrl
+    imageUrls
   );
 
   return res

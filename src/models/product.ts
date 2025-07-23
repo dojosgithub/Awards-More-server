@@ -5,7 +5,7 @@ import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 export interface IProduct {
   _id: Types.ObjectId;
-  imageUrl?: string;
+  imageUrls?: string[];
   title?: string; // e.g., "sent", "draft"
   category?: Types.ObjectId;
   sku?: string;
@@ -26,8 +26,8 @@ type productSchema = Model<IProduct, {}>;
 
 const productSchema = new Schema<IProduct, productSchema>(
   {
-    imageUrl: {
-      type: String,
+    imageUrls: {
+      type: [],
     },
     title: {
       type: String,

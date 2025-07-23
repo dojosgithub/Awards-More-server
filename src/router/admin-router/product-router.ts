@@ -10,7 +10,7 @@ const productRouter: Router = Router({ mergeParams: true });
 
 //? @api  = /add-product
 //? @desc = add a new product
-productRouter.post(Paths.Product.addProduct, asyncHandler(AuthenticateMW),parser .single('file'), asyncHandler(productController.addProduct));
+productRouter.post(Paths.Product.addProduct, asyncHandler(AuthenticateMW),parser.array('files', 10), asyncHandler(productController.addProduct));
 
 
 //? @api  = /products
@@ -22,7 +22,7 @@ productRouter.get(Paths.Product.list, asyncHandler(AuthenticateMW), asyncHandler
 productRouter.put(
     Paths.Product.edit,
     asyncHandler(AuthenticateMW),
-    parser.single('file'), 
+    parser.array('files', 10),
   asyncHandler(productController.editProduct)
 );
 

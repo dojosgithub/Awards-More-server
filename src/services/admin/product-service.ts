@@ -41,7 +41,7 @@ interface paginationParams {
 export const addProduct = async (
   body: IProduct,
   res: Response,
-  image: string
+  images: string[]
 ) => {
   const {
     title,
@@ -118,8 +118,8 @@ export const addProduct = async (
     minimumOrderQuantity,
     quickbooksItemId,
     qtyOnHand,
-    imageUrl:
-      image ||
+    imageUrls:
+      images ||
       "https://res.cloudinary.com/dojo-dev/image/upload/v1752143708/awards-and-more-dev/avatar_zmfdyk.png",
   };
   const _product = new Product(_newProduct);
@@ -207,7 +207,7 @@ export const editProduct = async (
   body: Partial<IProduct>,
   res: Response,
   productId: string,
-  image?: string
+  images?: string[]
 ) => {
   const product = await Product.findById(productId);
   if (!product) {
@@ -275,7 +275,7 @@ export const editProduct = async (
 
   const payload = {
     ...body,
-    imageUrl: image || product.imageUrl,
+    imageUrl: images || product.imageUrls,
   };
 
   const _doc = await Product.findByIdAndUpdate(
