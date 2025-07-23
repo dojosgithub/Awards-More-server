@@ -161,6 +161,40 @@ export const getAllProducts = async (params: paginationParams) => {
     $sort: { createdAt: -1 },
   });
 
+    pipeline.push(
+    {
+      $lookup: {
+        from: "categories", // this should match your actual MongoDB collection name
+        localField: "category",
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    {
+      $unwind: {
+        path: "$category",
+        preserveNullAndEmptyArrays: true, // In case category is missing
+      },
+    },
+    {
+      $project: {
+        imageUrl: 1,
+        title: 1,
+        sku: 1,
+        price: 1,
+        minimumOrderQuantity: 1,
+        description: 1,
+        quickbooksItemId: 1,
+        qtyOnHand: 1,
+        createdAt: 1,
+        category: {
+          _id: 1,
+          title: 1,
+        },
+      },
+    }
+  );
+
   const aggregate = Product.aggregate(pipeline);
 
   // @ts-ignore
