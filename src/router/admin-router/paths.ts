@@ -39,6 +39,7 @@ const Paths = {
     edit : '/promocode/:id',
     promocodeById : '/promocode/:id',
     delete : '/promocode/:id',
+    promoProducts : '/promocode-products',
   },
 };
 

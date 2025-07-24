@@ -298,9 +298,9 @@ export const deleteProduct = async (productId: string, res: Response) => {
   }
 };
 
-export const getAllProductsCategory = async () => {
+export const getAllPromocodeProducts = async () => {
   // @ts-ignore
-  const _doc = await Category.find().select("title");
+  const _doc = await Product.find().select("title");
 
   return _doc;
 };

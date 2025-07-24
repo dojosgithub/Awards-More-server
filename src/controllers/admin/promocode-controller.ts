@@ -94,10 +94,10 @@ export const addPromocode = async (
 //     .json({ message: Message.categoryDeleted });
 // };
 
-export const getAllProductsCategory = async (req: IReqPagination, res: Response) => {
+export const getAllPromocodeProducts = async (req: IReqPagination, res: Response) => {
 
   // List members in pagination
-  const list = await ProductService.getAllProductsCategory();
+  const list = await PromocodeService.getAllPromocodeProducts();
 
   return res.status(HttpStatusCodes.OK).json(list);
 };

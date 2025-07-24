@@ -8,9 +8,14 @@ import { parser } from "../../util/cloudinary";
 
 const promoCodeRouter: Router = Router({ mergeParams: true });
 
-//? @api  = /add-product
-//? @desc = add a new product
+//? @api  = /add-promocode
+//? @desc = add a new promocode
 promoCodeRouter.post(Paths.Promocode.addPromoCode, asyncHandler(AuthenticateMW), asyncHandler(promocodeController.addPromocode));
+
+//? @api  = /promocode-products
+//? @desc = gets list of promocodes Products
+promoCodeRouter.get(Paths.Promocode.promoProducts, asyncHandler(AuthenticateMW), asyncHandler(promocodeController.getAllPromocodeProducts));
+
 
 
 //? @api  = /products
@@ -38,9 +43,6 @@ promoCodeRouter.post(Paths.Promocode.addPromoCode, asyncHandler(AuthenticateMW),
 //   asyncHandler(productController.deleteProduct)
 // );
 
-//? @api  = /product-category
-//? @desc = gets list of products category
-// promoCodeRouter.get(Paths.Product.prductCategory, asyncHandler(AuthenticateMW), asyncHandler(productController.getAllProductsCategory));
 
 
 export { promoCodeRouter };
