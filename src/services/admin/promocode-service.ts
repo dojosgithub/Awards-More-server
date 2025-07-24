@@ -66,7 +66,7 @@ export const addPromocode = async (body: IPromo) => {
   return _promocode;
 };
 
-export const getAllProducts = async (params: paginationParams) => {
+export const getAllPromocodes = async (params: paginationParams) => {
   const { page, limit, search } = params;
 
   const paginateOptions = {
@@ -78,7 +78,7 @@ export const getAllProducts = async (params: paginationParams) => {
 
   // Handle search
   if (!_.isEmpty(search) && !_.isUndefined(search)) {
-    const documentMatchKeys = ["title", "sku"];
+    const documentMatchKeys = ["code", "discountAmount"];
 
     const orQueryArray = documentMatchKeys.map((key) => ({
       [key]: {
@@ -99,44 +99,10 @@ export const getAllProducts = async (params: paginationParams) => {
     $sort: { createdAt: -1 },
   });
 
-  pipeline.push(
-    {
-      $lookup: {
-        from: "categories", // this should match your actual MongoDB collection name
-        localField: "category",
-        foreignField: "_id",
-        as: "category",
-      },
-    },
-    {
-      $unwind: {
-        path: "$category",
-        preserveNullAndEmptyArrays: true, // In case category is missing
-      },
-    },
-    {
-      $project: {
-        imageUrls: 1,
-        title: 1,
-        sku: 1,
-        price: 1,
-        minimumOrderQuantity: 1,
-        description: 1,
-        quickbooksItemId: 1,
-        qtyOnHand: 1,
-        createdAt: 1,
-        category: {
-          _id: 1,
-          title: 1,
-        },
-      },
-    }
-  );
-
-  const aggregate = Product.aggregate(pipeline);
+  const aggregate = PromoCode.aggregate(pipeline);
 
   // @ts-ignore
-  const _doc = await Product.aggregatePaginate(aggregate, paginateOptions);
+  const _doc = await PromoCode.aggregatePaginate(aggregate, paginateOptions);
 
   return _doc;
 };

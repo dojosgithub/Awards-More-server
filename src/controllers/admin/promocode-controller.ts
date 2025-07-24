@@ -44,16 +44,16 @@ export const addPromocode = async (
     .json({ data: promocode, message: Message.promocodeAdded });
 };
 
-// export const getAllProducts = async (req: IReqPagination, res: Response) => {
-//   const limit = parseInt(req.query.limit) || 10;
-//   const page = parseInt(req.query.page) || 1;
-//   const search = req.query.search || "";
+export const getAllPromocodes = async (req: IReqPagination, res: Response) => {
+  const limit = parseInt(req.query.limit) || 10;
+  const page = parseInt(req.query.page) || 1;
+  const search = req.query.search || "";
 
-//   // List members in pagination
-//   const list = await ProductService.getAllProducts({ page, limit, search });
+  // List members in pagination
+  const list = await PromocodeService.getAllPromocodes({ page, limit, search });
 
-//   return res.status(HttpStatusCodes.OK).json(list);
-// };
+  return res.status(HttpStatusCodes.OK).json(list);
+};
 
 // export const editProduct = async (req: Request, res: Response) => {
 //   const { id: productId } = req.params;

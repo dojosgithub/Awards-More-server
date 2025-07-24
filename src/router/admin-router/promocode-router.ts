@@ -18,9 +18,9 @@ promoCodeRouter.get(Paths.Promocode.promoProducts, asyncHandler(AuthenticateMW),
 
 
 
-//? @api  = /products
-//? @desc = gets list of products
-// promoCodeRouter.get(Paths.Product.list, asyncHandler(AuthenticateMW), asyncHandler(productController.getAllProducts));
+//? @api  = /promocodes
+//? @desc = gets list of promocodes
+promoCodeRouter.get(Paths.Promocode.list, asyncHandler(AuthenticateMW), asyncHandler(promocodeController.getAllPromocodes));
 
 //? @api  = product/:id
 //? @desc = edit product by ID
