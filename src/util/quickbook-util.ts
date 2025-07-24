@@ -1,5 +1,39 @@
 import { Quickbook } from "../models";
 import axios from "axios";
+import { Request, Response } from "express";
+import qs from "qs";
+
+export const performQuickBooksTokenRefresh = async () => {
+  const session = await Quickbook.findOne();
+  if (!session) throw new Error("QuickBooks session not found");
+
+  const response = await axios.post(
+    "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    qs.stringify({
+      grant_type: "refresh_token",
+      refresh_token: session.refresh_token,
+    }),
+    {
+      headers: {
+        Authorization:
+          "Basic " +
+          Buffer.from(
+            `${process.env.QB_CLIENT_ID}:${process.env.QB_CLIENT_SECRET}`
+          ).toString("base64"),
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+
+  const { access_token, refresh_token, expires_in } = response.data;
+
+  session.access_token = access_token;
+  session.refresh_token = refresh_token;
+  session.expires_in = (Date.now() + expires_in * 1000).toString();
+  await session.save();
+
+  console.log("✅ QuickBooks token refreshed.");
+};
 
 export const getQuickBooksSessionFromDB = async () => {
   const session = await Quickbook.findOne().sort({ createdAt: -1 });

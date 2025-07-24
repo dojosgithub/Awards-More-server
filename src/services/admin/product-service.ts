@@ -1,15 +1,9 @@
 import _, { escapeRegExp } from "lodash";
-import { RouteError } from "../../other/classes";
 import HttpStatusCodes from "../../constants/https-status-codes";
-import { IProduct, IStaff, Product, Quickbook, Staff } from "../../models";
-import passwordUtil from "../../util/password-util";
-import { Request, Response } from "express";
-import { USER_ROLE } from "../../constants/misc";
-import Email from "../../util/email-util";
-import { Category, ICategory } from "../../models/category";
-import { CATEGORY_STATUS } from "../../util/misc";
+import { IProduct, Product, Quickbook } from "../../models";
+import { Response } from "express";
+import { Category } from "../../models/category";
 import axios from "axios";
-import { refreshQuickBooksToken } from "../../util/refresh-quickbooks-token";
 import { getQuickBooksSessionFromDB } from "../../util/quickbook-util";
 
 export const Errors = {

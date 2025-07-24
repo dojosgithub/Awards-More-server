@@ -11,12 +11,4 @@ const quickbooksAuthRouter: Router = Router({ mergeParams: true });
 quickbooksAuthRouter.get(Paths.Auth.auth.login, asyncHandler(authController.quickbooksLogin));
 quickbooksAuthRouter.get(Paths.Auth.auth.callback, asyncHandler(authController.quickbooksLogin));
 
-// quickbooksAuthRouter.get(Paths.Auth.auth.callback, asyncHandler(authController.quickbooksLoginCallback));
-
-// quickbooksAuthRouter.post(Paths.Auth.login, asyncHandler(authController.login));
-
-// quickbooksAuthRouter.post(Paths.Auth.forgotPassword, asyncHandler(authController.forgotPasswordSendCode));
-
-// quickbooksAuthRouter.post(Paths.Auth.verify, asyncHandler(authController.verifyToken));
-
 export { quickbooksAuthRouter };
