@@ -5,3 +5,4 @@ export * from "./totp";
 export * from "./refresh-token";
 export * from "./category";
 export * from "./product";
+export * from "./promocode";

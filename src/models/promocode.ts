@@ -3,34 +3,73 @@ import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 // ----------------------------------------
 
-export interface ICategory {
+export interface IPromo {
   _id: Types.ObjectId;
-  title?: string; // e.g., "sent", "draft"
-  description?: string;
-  imageUrl?: string;
-  status?: string;
+  code?: string; // e.g., "sent", "draft"
+  createdFor?: string;
+  type?: string;
+  discountAmount?: number;
+  isNewUser?: boolean;
+  isActive?: boolean;
+  users?: Types.ObjectId[];
+  isProductSpecific?: boolean;
+  products?: Types.ObjectId[];
+  redeemptionLimit?: number;
+  expiryDate?: Date;
+  expiryTime?: string;
   createdAt: NativeDate;
   updatedAt: NativeDate;
 }
 
 // If you plan to add instance methods later, define them here
 
-type categorySchema = Model<ICategory, {}>;
+type promoCodeSchema = Model<IPromo, {}>;
 
 // ----------------------------------------
 
-const categorySchema = new Schema<ICategory, categorySchema>(
+const promoCodeSchema = new Schema<IPromo, promoCodeSchema>(
   {
-    title: {
+    code: {
+      type: String,
+      required: true,
+    },
+    createdFor: {
       type: String,
     },
-    description: {
+    type: {
       type: String,
     },
-    imageUrl: {
-      type: String,
+    discountAmount: {
+      type: Number,
     },
-    status: {
+    isNewUser: {
+      type: Boolean,
+    },
+    isActive: {
+      type: Boolean,
+    },
+    users: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    isProductSpecific: {
+      type: Boolean,
+    },
+    products: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+    redeemptionLimit: {
+      type: Number,
+    },
+    expiryDate: {
+      type: Date,
+    },
+    expiryTime: {
       type: String,
     },
   },
@@ -38,7 +77,7 @@ const categorySchema = new Schema<ICategory, categorySchema>(
 );
 
 // Optional: remove sensitive fields when converting to JSON
-categorySchema.set("toJSON", {
+promoCodeSchema.set("toJSON", {
   virtuals: true, // keep virtuals
   versionKey: false,
   transform: function (doc, ret) {
@@ -49,10 +88,10 @@ categorySchema.set("toJSON", {
 });
 
 // Plugins
-categorySchema.plugin(aggregatePaginate);
+promoCodeSchema.plugin(aggregatePaginate);
 
 // Model
-export const Category = model<ICategory, categorySchema>(
-  "Category",
-  categorySchema
+export const PromoCode = model<IPromo, promoCodeSchema>(
+  "PromoCode",
+  promoCodeSchema
 );

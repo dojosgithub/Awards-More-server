@@ -33,6 +33,13 @@ const Paths = {
     delete : '/product/:id',
     prductCategory : '/product-category',
   },
+  Promocode: {
+    addPromoCode: "/add-promocode",
+    list : '/promocodes',
+    edit : '/promocode/:id',
+    promocodeById : '/promocode/:id',
+    delete : '/promocode/:id',
+  },
 };
 
 export default Paths;
