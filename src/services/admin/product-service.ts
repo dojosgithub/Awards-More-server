@@ -172,7 +172,7 @@ export const getAllProducts = async (params: paginationParams) => {
     },
     {
       $project: {
-        imageUrl: 1,
+        imageUrls: 1,
         title: 1,
         sku: 1,
         price: 1,
