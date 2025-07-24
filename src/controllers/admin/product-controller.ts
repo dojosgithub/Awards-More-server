@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { IProduct, IStaff } from "../../models";
+import { IProduct, IStaff, Product } from "../../models";
 import HttpStatusCodes from "../../constants/https-status-codes";
-import { CategoryService, ProductService } from "../../services/admin";
-import { Category } from "../../models/category";
+import {  ProductService } from "../../services/admin";
 
 // Messages
 const Message = {
@@ -76,15 +75,15 @@ export const editProduct = async (req: Request, res: Response) => {
     .json({ data: updatedProduct, message: Message.productEdit });
 };
 
-export const getcategoryById = async (req: IReqCategoryId, res: Response) => {
-  const { id: categoryId } = req.params;
+export const getProductById = async (req: IReqCategoryId, res: Response) => {
+  const { id: productId } = req.params;
 
-  const category = await Category.findById(categoryId);
-  if (!category)
+  const product = await Product.findById(productId);
+  if (!product)
     return res
       .status(HttpStatusCodes.NOT_FOUND)
-      .json({ success: false, message: "Category not found" });
-  res.status(HttpStatusCodes.OK).json({ success: true, data: category });
+      .json({ success: false, message: "Product not found" });
+  res.status(HttpStatusCodes.OK).json({ success: true, data: product });
 };
 
 export const deleteProduct = async (req: Request, res: Response) => {

@@ -26,9 +26,9 @@ productRouter.put(
   asyncHandler(productController.editProduct)
 );
 
-// //? @api  = category/:id
-// //? @desc = Get a specific category by ID
-// productRouter.get(Paths.Category.categoryId, asyncHandler(AuthenticateMW), asyncHandler(categoryController.getcategoryById));
+//? @api  = category/:id
+//? @desc = Get a specific category by ID
+productRouter.get(Paths.Product.productById, asyncHandler(AuthenticateMW), asyncHandler(productController.getProductById));
 
 //? @api  = /api/category/:id
 //? @desc = delete category by ID

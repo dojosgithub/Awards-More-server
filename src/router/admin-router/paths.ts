@@ -29,6 +29,7 @@ const Paths = {
     addProduct: "/add-product",
     list : '/products',
     edit : '/product/:id',
+    productById : '/product/:id',
     delete : '/product/:id',
     prductCategory : '/product-category',
   },
