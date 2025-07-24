@@ -359,3 +359,11 @@ export const deleteProduct = async (productId: string, res: Response) => {
     });
   }
 };
+
+export const getAllProductsCategory = async () => {
+ 
+  // @ts-ignore
+  const _doc = await Category.find().select("title")
+
+  return _doc;
+};

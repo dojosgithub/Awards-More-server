@@ -96,3 +96,11 @@ export const deleteProduct = async (req: Request, res: Response) => {
     .status(HttpStatusCodes.OK)
     .json({ message: Message.categoryDeleted });
 };
+
+export const getAllProductsCategory = async (req: IReqPagination, res: Response) => {
+
+  // List members in pagination
+  const list = await ProductService.getAllProductsCategory();
+
+  return res.status(HttpStatusCodes.OK).json(list);
+};

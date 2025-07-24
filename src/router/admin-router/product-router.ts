@@ -38,4 +38,9 @@ productRouter.delete(
   asyncHandler(productController.deleteProduct)
 );
 
+//? @api  = /product-category
+//? @desc = gets list of products category
+productRouter.get(Paths.Product.prductCategory, asyncHandler(AuthenticateMW), asyncHandler(productController.getAllProductsCategory));
+
+
 export { productRouter };

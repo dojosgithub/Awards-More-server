@@ -30,7 +30,7 @@ const Paths = {
     list : '/products',
     edit : '/product/:id',
     delete : '/product/:id',
-    categoryId : '/category/:id',
+    prductCategory : '/product-category',
   },
 };
 
