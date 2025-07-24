@@ -39,10 +39,10 @@ export const addPromocode = async (body: IPromo) => {
     type,
     discountAmount,
     isNewUser,
-    isActive,
     isProductSpecific,
     products,
-    redeemptionLimit,
+    redemptionLimit,
+    isredemptionLimit,
     expiryDate,
     expiryTime,
   } = body;
@@ -53,10 +53,10 @@ export const addPromocode = async (body: IPromo) => {
     type,
     discountAmount,
     isNewUser,
-    isActive,
     isProductSpecific,
     products,
-    redeemptionLimit,
+    isredemptionLimit,
+    redemptionLimit,
     expiryDate,
     expiryTime,
   };
@@ -76,16 +76,29 @@ export const getAllPromocodes = async (params: paginationParams) => {
 
   const pipeline: any[] = [];
 
-  // Handle search
-  if (!_.isEmpty(search) && !_.isUndefined(search)) {
-    const documentMatchKeys = ["code", "discountAmount"];
+  // 🔁 Convert number to string for search
+  pipeline.push({
+    $addFields: {
+      discountAmountStr: { $toString: "$discountAmount" }
+    }
+  });
 
-    const orQueryArray = documentMatchKeys.map((key) => ({
-      [key]: {
-        $regex: escapeRegExp(search),
-        $options: "i",
+  // 🔍 Handle search
+  if (!_.isEmpty(search) && !_.isUndefined(search)) {
+    const orQueryArray = [
+      {
+        code: {
+          $regex: escapeRegExp(search),
+          $options: "i",
+        },
       },
-    }));
+      {
+        discountAmountStr: {
+          $regex: escapeRegExp(search),
+          $options: "i",
+        },
+      },
+    ];
 
     pipeline.push({
       $match: {
@@ -94,9 +107,19 @@ export const getAllPromocodes = async (params: paginationParams) => {
     });
   }
 
-  // Sort by createdAt (descending)
+  // 📅 Sort by createdAt (descending)
   pipeline.push({
     $sort: { createdAt: -1 },
+  });
+
+  // 🎯 Project only selected fields (excluding the helper field)
+  pipeline.push({
+    $project: {
+      code: 1,
+      createdFor: 1,
+      discountAmount: 1,
+      type: 1,
+    },
   });
 
   const aggregate = PromoCode.aggregate(pipeline);

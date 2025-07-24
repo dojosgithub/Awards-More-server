@@ -14,9 +14,10 @@ export interface IPromo {
   users?: Types.ObjectId[];
   isProductSpecific?: boolean;
   products?: Types.ObjectId[];
-  redeemptionLimit?: number;
-  expiryDate?: Date;
-  expiryTime?: string;
+  isredemptionLimit?: boolean;
+  redemptionLimit?: number | null;
+  expiryDate?: Date | null;
+  expiryTime?: string | null;
   createdAt: NativeDate;
   updatedAt: NativeDate;
 }
@@ -47,6 +48,7 @@ const promoCodeSchema = new Schema<IPromo, promoCodeSchema>(
     },
     isActive: {
       type: Boolean,
+      default: true,
     },
     users: [
       {
@@ -63,7 +65,10 @@ const promoCodeSchema = new Schema<IPromo, promoCodeSchema>(
         ref: "Product",
       },
     ],
-    redeemptionLimit: {
+     isredemptionLimit: {
+      type: Boolean,
+    },
+    redemptionLimit: {
       type: Number,
     },
     expiryDate: {
