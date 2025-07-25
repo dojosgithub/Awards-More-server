@@ -8,7 +8,7 @@ const Message = {
   successSignup: "Sign up successful.",
   promocodeAdded: "Promocode added successfully.",
   productEdit: "Product edited successfully.",
-  categoryDeleted: "Category deleted successfully.",
+  promocodeDeleted: "Promocode deleted successfully.",
   successVerified: "Verified success",
   success: "Success",
   error: "An error occurred",
@@ -100,4 +100,14 @@ export const getAllPromocodeProducts = async (req: IReqPagination, res: Response
   const list = await PromocodeService.getAllPromocodeProducts();
 
   return res.status(HttpStatusCodes.OK).json(list);
+};
+
+export const deletePromoCode = async (req: Request, res: Response) => {
+  const { id: promocodeId } = req.params;
+
+  await PromocodeService.deletePromocode(promocodeId);
+
+  return res
+    .status(HttpStatusCodes.OK)
+    .json({ message: Message.promocodeDeleted });
 };

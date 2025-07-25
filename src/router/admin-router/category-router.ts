@@ -38,4 +38,9 @@ categoryRouter.delete(
   asyncHandler(categoryController.deleteCategory)
 );
 
+//? @api  = /category/status/:id'
+//? @desc = Update category status by ID
+categoryRouter.put(Paths.Category.editCategoryStatus, asyncHandler(AuthenticateMW), asyncHandler(categoryController.editCategoryStatus));
+
+
 export { categoryRouter };

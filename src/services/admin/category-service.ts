@@ -35,6 +35,7 @@ interface paginationParams {
   search: string;
 }
 
+
 export const addCategory = async (
   body: ICategory,
   res: Response,
@@ -98,8 +99,8 @@ export const getAllCategories = async (params: paginationParams) => {
   return _doc;
 };
 
-export const editEmployee = async (
-  body: Partial<IStaff>,
+export const editCategory = async (
+  body: Partial<ICategory>,
   res: Response,
   categoryId: string,
   image?: string
@@ -131,4 +132,29 @@ export const deletecategory = async (categoryId: string) => {
   if (!category) {
     throw new Error("Category not found");
   }
+};
+
+export const editCategoryStatus = async (
+  status: string,
+  res: Response,
+  categoryId: string,
+) => {
+  console.log("editCategoryStatus", status, categoryId);
+  const category = await Category.findById(categoryId);
+  if (!category) {
+    return res
+      .status(HttpStatusCodes.NOT_FOUND)
+      .json({ message: "Category not found" });
+  }
+  console.log('status', status);
+console.log("Category found", category);
+  // const payload = {
+  //   ...body,
+  // };
+  category.status = status 
+  await category.save();
+
+
+
+  return category;
 };

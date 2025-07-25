@@ -16,4 +16,6 @@ authRouter.post(Paths.Auth.forgotPassword, asyncHandler(authController.forgotPas
 
 authRouter.post(Paths.Auth.verify, asyncHandler(authController.verifyToken));
 
+authRouter.put(Paths.Auth.changePassword, asyncHandler(authController.changePassword));
+
 export { authRouter };

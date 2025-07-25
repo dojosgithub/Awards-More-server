@@ -293,3 +293,11 @@ export const getAllPromocodeProducts = async () => {
 
   return _doc;
 };
+
+export const deletePromocode = async (promocodeId: string) => {
+  const promocode = await PromoCode.findByIdAndDelete(promocodeId);
+
+  if (!promocode) {
+    throw new Error("Promocode not found");
+  }
+};

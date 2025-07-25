@@ -5,6 +5,7 @@ const Paths = {
     login: "/log-in",
     forgotPassword: "/forgot-password",
     verify: "/verify-otp",
+    changePassword: "/change-password/:id",
     auth:{
       login:"/quickbooks/login",
       callback : "/quickbooks/callback",
@@ -22,6 +23,7 @@ const Paths = {
     addCategory: "/add-category",
     list : '/categories',
     edit : '/category/:id',
+    editCategoryStatus : '/category/status/:id',
     categoryId : '/category/:id',
     delete : '/category/:id',
   },

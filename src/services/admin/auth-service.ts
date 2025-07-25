@@ -3,7 +3,7 @@ import { RouteError } from "../../other/classes";
 import HttpStatusCodes from "../../constants/https-status-codes";
 import { IStaff, Staff, TOTP } from "../../models";
 import passwordUtil from "../../util/password-util";
-import {  Response } from "express";
+import { Response } from "express";
 import { USER_ROLE } from "../../constants/misc";
 import speakeasy from "speakeasy";
 import { generateOTToken, verifyTOTPToken } from "../../util/misc";
@@ -103,11 +103,12 @@ export const login = async (body: ILoginReq) => {
   // Fetch user
   const staff = await Staff.findOne({ email });
 
-  if (_.isEmpty(staff))
+  if (_.isEmpty(staff)) {
     throw new RouteError(HttpStatusCodes.BAD_REQUEST, Errors.InvalidLogin);
+  }
 
   // Check password
-  const hash = staff.password ?? "",
+  const hash = staff.password,
     pwdPassed = await passwordUtil.compare(password, hash);
 
   if (!pwdPassed) {
@@ -151,7 +152,7 @@ export const verifyToken = async (
   email: string,
   code: string,
   password: string,
-  ip : string,  
+  ip: string,
   res: Response
 ) => {
   let totp = await TOTP.findOneAndDelete({ email }).lean();
@@ -181,25 +182,50 @@ export const verifyToken = async (
       staff.password = hashPassword;
       await staff.save();
 
-        const jwtPayload: JwtPayload = {
-          id: staff?._id.toString(),
-          email: staff?.email,
-          role: staff?.role,
-        };
-      
-        // Create access token & refresh token
-        const tokens = await sessionUtil.generateJWTtokens(jwtPayload, ip);
-      
-        // Setup Refresh token Cookie
-        await sessionUtil.addRefreshTokenCookie(res, tokens.refreshToken);
+      const jwtPayload: JwtPayload = {
+        id: staff?._id.toString(),
+        email: staff?.email,
+        role: staff?.role,
+      };
+
+      // Create access token & refresh token
+      const tokens = await sessionUtil.generateJWTtokens(jwtPayload, ip);
+
+      // Setup Refresh token Cookie
+      await sessionUtil.addRefreshTokenCookie(res, tokens.refreshToken);
 
       return res
         .status(HttpStatusCodes.OK)
-        .json({ staff,tokens, message: "Password updated successfully" });
+        .json({ staff, tokens, message: "Password updated successfully" });
     } else {
       return res
         .status(HttpStatusCodes.BAD_REQUEST)
         .json({ message: "OTP not verified" });
     }
   }
+};
+
+export const changePassword = async (
+  oldPassword: string,
+  newPassword: string,
+  id: string,
+  res: Response
+) => {
+  const staff = await Staff.findById(id);
+  if (!staff) {
+    return res
+      .status(HttpStatusCodes.NOT_FOUND)
+      .json({ message: "Staff not found" });
+  }
+  const isAuthenticated = await passwordUtil.compare(
+    oldPassword,
+    staff.password
+  );
+
+  if (!isAuthenticated) {
+    return res.status(400).json({ message: "Password does not matched" });
+  }
+  const hashPassword = await passwordUtil.getHash(newPassword);
+  staff.password = hashPassword;
+  await staff.save();
 };

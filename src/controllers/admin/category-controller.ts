@@ -29,6 +29,10 @@ interface IReqCategoryId extends Request<{ id: string }> {
   id: string;
 }
 
+interface ICategoryStatus {
+  status: string;
+}
+
 export const addCategory = async (
   req: Request<{}, {}, ICategory>,
   res: Response
@@ -59,10 +63,10 @@ export const getAllCategory = async (req: IReqPagination, res: Response) => {
 
 export const editcategory = async (req: Request, res: Response) => {
   const { id: categoryId } = req.params;
-  const body = req.body as Partial<IStaff>;
+  const body = req.body as Partial<ICategory>;
   const imageUrl = req.file?.path as string | undefined;
 
-  const updatedUser = await CategoryService.editEmployee(
+  const updatedUser = await CategoryService.editCategory(
     body,
     res,
     categoryId,
@@ -93,4 +97,21 @@ export const deleteCategory = async (req: Request, res: Response) => {
   return res
     .status(HttpStatusCodes.OK)
     .json({ message: Message.categoryDeleted });
+};
+
+export const editCategoryStatus = async (req: Request, res: Response) => {
+  const { id: categoryId } = req.params;
+  const { status } = req.body as any;
+
+  console.log("editCategoryStatus", status, categoryId);
+
+  const updatedUser = await CategoryService.editCategoryStatus(
+    status,
+    res,
+    categoryId,
+  );
+
+  return res
+    .status(HttpStatusCodes.OK)
+    .json({ data: updatedUser, message: Message.categoryEdit });
 };

@@ -22,26 +22,13 @@ promoCodeRouter.get(Paths.Promocode.promoProducts, asyncHandler(AuthenticateMW),
 //? @desc = gets list of promocodes
 promoCodeRouter.get(Paths.Promocode.list, asyncHandler(AuthenticateMW), asyncHandler(promocodeController.getAllPromocodes));
 
-//? @api  = product/:id
-//? @desc = edit product by ID
-// promoCodeRouter.put(
-//     Paths.Product.edit,
-//     asyncHandler(AuthenticateMW),
-//     parser.array('files', 10),
-//   asyncHandler(productController.editProduct)
-// );
-
-//? @api  = category/:id
-//? @desc = Get a specific category by ID
-// promoCodeRouter.get(Paths.Product.productById, asyncHandler(AuthenticateMW), asyncHandler(productController.getProductById));
-
-//? @api  = /api/category/:id
-//? @desc = delete category by ID
-// promoCodeRouter.delete(
-//   Paths.Product.delete,
-//   asyncHandler(AuthenticateMW),
-//   asyncHandler(productController.deleteProduct)
-// );
+//? @api  = /api/promocode/:id
+//? @desc = delete promocode by ID
+promoCodeRouter.delete(
+  Paths.Promocode.delete,
+  asyncHandler(AuthenticateMW),
+  asyncHandler(promocodeController.deletePromoCode)
+);
 
 
 

@@ -45,6 +45,13 @@ export interface IVerifyTotp {
   };
   ip: string;
 }
+export interface IChangePassword {
+  params: { id: string };
+  body: {
+    oldPassword: string;
+    newPassword: string;
+  };
+}
 
 export const signup = async (req: Request<{}, {}, IStaff>, res: Response) => {
   const body = req.body as IStaff;
@@ -63,7 +70,6 @@ export const signup = async (req: Request<{}, {}, IStaff>, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const body = req.body as IStaff;
   const { ip } = req;
-  console.log("IP", ip);
 
   // Login
   const staff = await AuthService.login(body);
@@ -108,6 +114,17 @@ export const verifyToken = async (req: IVerifyTotp, res: Response) => {
     .json({ user, message: Message.success });
 };
 
+export const changePassword = async (req: IChangePassword, res: Response) => {
+  const { oldPassword, newPassword } = req.body;
+  const { id } = req.params;
+  console.log('running');
+
+  await AuthService.changePassword(oldPassword, newPassword, id, res);
+
+  return res
+    .status(HttpStatusCodes.OK)
+    .json({ message: "Password updated successfully" });
+};
 /////// quickbooks auth ////////////
 
 export const quickbooksLogin = async (req: Request, res: Response) => {
